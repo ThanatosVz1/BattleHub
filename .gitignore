@@ -1,0 +1,8 @@
+# Reference downloads & temporary browser scrape files
+Home - Marvel Contest of Champions*
+*.zip
+
+# Operating System metadata
+.DS_Store
+Thumbs.db
+desktop.ini

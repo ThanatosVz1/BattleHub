@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BattleHub | Marvel Contest of Champions Events & Units Command</title>
+  
+  <!-- Google Fonts: Orbitron, Montserrat, DM Sans, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@500;700;800&family=Montserrat:wght@700;800;900&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="app-wrapper">
+
+    <!-- ====================================================================
+         HEADER NAVIGATION BAR (BattleHub Emblem + Navigation + HUD)
+         ==================================================================== -->
+    <header class="main-nav">
+      <a href="#" class="brand-section">
+        <div class="battlehub-emblem-badge" title="BattleHub Battlerealm Command">
+          <svg class="battlerealm-crest-svg" viewBox="0 0 32 32" width="28" height="28">
+            <polygon points="16,2 30,9 30,23 16,30 2,23 2,9" fill="rgba(255, 204, 0, 0.12)" stroke="var(--contest-gold)" stroke-width="2"/>
+            <polygon points="16,6 26,11 26,21 16,26 6,21 6,11" fill="none" stroke="var(--marvel-red)" stroke-width="1.5"/>
+            <circle cx="16" cy="16" r="3.5" fill="var(--contest-gold)"/>
+          </svg>
+        </div>
+        <div class="brand-text-block">
+          <div style="display: flex; align-items: center; gap: 0.45rem;">
+            <span class="brand-title-mcoc">BATTLEHUB</span>
+            <span class="badge-unofficial-fan">FAN COMMUNITY</span>
+          </div>
+          <span class="brand-sub-mcoc">CONTEST OF CHAMPIONS • SUMMONER COMMAND</span>
+        </div>
+      </a>
+
+      <!-- Center Navigation Tabs -->
+      <nav class="nav-tabs">
+        <button class="nav-tab-btn active" data-view="view-news">
+          News & Events
+        </button>
+        <button class="nav-tab-btn" data-view="view-tracker" title="Sign In Required">
+          Units Tracker 🔒
+        </button>
+        <button class="nav-tab-btn" data-view="view-leaderboard" title="Sign In Required">
+          Leaderboards 🔒
+        </button>
+        <button class="nav-tab-btn" data-view="view-discussion" title="Sign In Required">
+          Community Lounge 🔒
+        </button>
+        <!-- ADMIN TAB: STRICTLY HIDDEN UNLESS LOGGED IN AS ADMIN -->
+        <button class="nav-tab-btn admin-tab" data-view="view-admin" id="nav-admin-btn" style="display: none;">
+          Admin Portal
+        </button>
+      </nav>
+
+      <!-- Right HUD Controls -->
+      <div class="nav-user-controls">
+        <div class="nav-unit-counter" id="nav-unit-counter-box" title="Units Balance (Sign in to view and track)">
+          <svg class="unit-icon" viewBox="0 0 24 24">
+            <polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5" />
+          </svg>
+          <span id="nav-units-count">--</span>
+        </div>
+
+        <div class="user-badge-pill" id="nav-user-pill" title="Click to Sign In / Summoner Profile">
+          <div class="user-avatar-circle" id="nav-user-avatar">
+            <span>👤</span>
+          </div>
+          <div class="user-info-text">
+            <span class="user-ign" id="nav-user-ign">Guest</span>
+            <span class="user-role-tag" id="nav-user-role">Sign In</span>
+          </div>
+          <span style="font-size: 0.75rem; color: var(--text-dim); margin-left: 2px;">▾</span>
+        </div>
+
+        <button class="btn btn-outline btn-sm" id="btn-nav-logout" style="display: none; padding: 0.35rem 0.75rem; font-size: 0.75rem;" title="Sign out of current account">
+          Sign Out
+        </button>
+      </div>
+    </header>
+
+    <!-- ====================================================================
+         MAIN CONTENT AREA
+         ==================================================================== -->
+    <main class="main-content">
+
+      <!-- ================================================================
+           VIEW 1: NEWS & EVENT EXPLANATIONS (playcontestofchampions.com/events/)
+           ================================================================ -->
+      <section id="view-news" class="view-section active">
+        <!-- Hero Banner -->
+        <div class="hero-banner">
+          <div class="hero-text">
+            <div class="hero-tag-ribbon">OFFICIAL EVENTS & SAGA DISPATCH</div>
+            <h2>BATTLEHUB DISPATCH & EVENT MECHANICS</h2>
+            <p>Master upcoming boss gauntlets, Reclamation War Sieges, and optimize your personal unit progression toward the 30,000 Banquet Vault goal without spending real currency.</p>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+              <button class="btn btn-primary" onclick="document.querySelector('.nav-tab-btn[data-view=\'view-tracker\']').click()">
+                🚀 Open Units Progression Tracker
+              </button>
+              <button class="btn btn-marvel" onclick="document.querySelector('.nav-tab-btn[data-view=\'view-leaderboard\']').click()">
+                👑 View Summoner Rankings
+              </button>
+            </div>
+          </div>
+
+          <div class="hero-stats-box">
+            <div class="hero-stat-item">
+              <div class="hero-stat-val">30,000</div>
+              <div class="hero-stat-label">Banquet Vault Target</div>
+            </div>
+            <div class="hero-stat-item">
+              <div class="hero-stat-val">3,547</div>
+              <div class="hero-stat-label">Weekly Arena Yield</div>
+            </div>
+            <div class="hero-stat-item">
+              <div class="hero-stat-val">1,525</div>
+              <div class="hero-stat-label">Monthly Daily Tasks</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Sub-Navigation (Matching official categories) -->
+        <div class="section-header-bar">
+          <div class="section-title-wrap">
+            <h3>LATEST EVENTS, UPDATES & SPOTLIGHTS</h3>
+            <p>Select any event card to view deep-dive fight mechanics, node counters, and join discussions</p>
+          </div>
+
+          <div style="display: flex; gap: 0.85rem; align-items: center; flex-wrap: wrap;">
+            <input type="text" id="news-search-input" class="form-control" placeholder="Search champion, node, event..." style="width: 250px; padding: 0.5rem 0.85rem; font-size: 0.85rem;">
+            <div class="filter-bar">
+              <button class="filter-pill active" data-filter="all">All</button>
+              <button class="filter-pill" data-filter="Special Events">Special Events</button>
+              <button class="filter-pill" data-filter="Game Updates">Game Updates</button>
+              <button class="filter-pill" data-filter="Champion Spotlights">Champion Spotlights</button>
+              <button class="filter-pill" data-filter="Tips & Tricks">Tips & Tricks</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Event Cards Grid -->
+        <div class="news-grid" id="news-cards-grid">
+          <!-- Dynamically populated by app.js -->
+        </div>
+      </section>
+
+      <!-- ================================================================
+           VIEW 2: UNITS PROGRESSION TRACKER (Based on Units_Progression.xlsx)
+           ================================================================ -->
+      <section id="view-tracker" class="view-section">
+        <div class="section-header-bar">
+          <div class="section-title-wrap">
+            <h3>UNITS PROGRESSION & 30,000 BANQUET TRACKER</h3>
+            <p>Faithful interactive implementation of the Cosmos Units Progression model (Daily, Arena, Monthly & Extra)</p>
+          </div>
+
+          <!-- Starting Balance Controls -->
+          <div style="display: flex; align-items: center; gap: 0.6rem; background: var(--mcoc-card); padding: 0.5rem 1rem; border: 1px solid var(--mcoc-card-border); clip-path: var(--clip-chamfer-btn);">
+            <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim); font-weight: 800; font-family: var(--font-display);">Starting Balance:</span>
+            <input type="number" id="input-starting-units" class="form-control" style="width: 105px; padding: 0.35rem 0.6rem; font-family: var(--font-mono); font-weight: 800; font-size: 0.95rem;" value="7920">
+            <button class="btn btn-primary btn-sm" id="btn-save-starting-units">Save</button>
+          </div>
+        </div>
+
+        <!-- Top Summary Cards -->
+        <div class="tracker-top-summary">
+          <div class="metric-card">
+            <div class="metric-label">Initial Starting Units</div>
+            <div class="metric-number" id="metric-initial-units">0</div>
+            <div class="metric-subtext">Baseline account balance</div>
+          </div>
+
+          <div class="metric-card earned">
+            <div class="metric-label">Total Units Earned</div>
+            <div class="metric-number" id="metric-total-earned" style="color: var(--science-green);">+0</div>
+            <div class="metric-subtext">Sum of all tracked checklists</div>
+          </div>
+
+          <div class="metric-card balance">
+            <div class="metric-label">Current Total Units</div>
+            <div class="metric-number" id="metric-current-balance" style="color: var(--cyan-cosmic);">0</div>
+            <div class="metric-subtext">Starting balance + earned</div>
+          </div>
+
+          <div class="metric-card banquet">
+            <div class="metric-label">Milestones Met</div>
+            <div class="metric-number" id="metric-milestones-ratio" style="color: var(--contest-gold);">0 of 8 Met</div>
+            <div class="metric-subtext">Towards 30,000 Banquet Vault</div>
+          </div>
+        </div>
+
+        <!-- Banquet Progress Bar Section -->
+        <div class="banquet-progress-section">
+          <div class="banquet-bar-header">
+            <h4><span>🎉</span> 30,000 Banquet Vault Savings Roadmap</h4>
+            <div style="display: flex; gap: 1.25rem; align-items: center;">
+              <span id="banquet-remaining-text" style="font-size: 0.85rem; color: var(--contest-gold-light); font-weight: 800; font-family: var(--font-display);"></span>
+              <span id="banquet-pct-text" style="font-family: var(--font-mono); font-weight: 900; font-size: 1.15rem; color: #fff;">0%</span>
+            </div>
+          </div>
+
+          <div class="progress-track">
+            <div class="progress-fill" id="banquet-progress-fill" style="width: 0%;"></div>
+          </div>
+
+          <!-- Milestones Chips -->
+          <div class="milestones-steps-row" id="milestones-indicator-row">
+            <!-- Populated by app.js -->
+          </div>
+        </div>
+
+        <!-- Subtabs for Checklist Categories -->
+        <div class="tracker-subtabs">
+          <button class="tracker-subtab-btn active" data-subtab="subtab-daily">
+            1. Daily Tasks Checklist (Super Event & Quest)
+          </button>
+          <button class="tracker-subtab-btn" data-subtab="subtab-arena">
+            2. Weekly Arena Milestones Table
+          </button>
+          <button class="tracker-subtab-btn" data-subtab="subtab-monthly">
+            3. Monthly Rewards (Radiance & EQ)
+          </button>
+          <button class="tracker-subtab-btn" data-subtab="subtab-extra">
+            4. Extra & Battlechips Crystals
+          </button>
+        </div>
+
+        <!-- Dynamic Subtab Content Container -->
+        <div id="tracker-subtab-content" class="checklist-container">
+          <!-- Populated by app.js -->
+        </div>
+      </section>
+
+      <!-- ================================================================
+           VIEW 3: LEADERBOARD & SUMMONER COMPARISON
+           ================================================================ -->
+      <section id="view-leaderboard" class="view-section">
+        <div class="section-header-bar">
+          <div class="section-title-wrap">
+            <h3>BATTLEREALM SUMMONER RANKINGS</h3>
+            <p>Compare daily consistency, weekly arena grinding, and Banquet savings milestones against other summoners</p>
+          </div>
+
+          <div class="timeframe-pills">
+            <button class="time-pill-btn" data-timeframe="daily">Daily Pace</button>
+            <button class="time-pill-btn" data-timeframe="weekly">Weekly Yield</button>
+            <button class="time-pill-btn active" data-timeframe="monthly">Monthly Earned</button>
+            <button class="time-pill-btn" data-timeframe="all">Total Balance</button>
+          </div>
+        </div>
+
+        <!-- Top 3 Podium -->
+        <div class="leaderboard-podium" id="leaderboard-podium">
+          <!-- Populated by app.js -->
+        </div>
+
+        <!-- Full Leaderboard Table -->
+        <div class="mcoc-card">
+          <div class="table-responsive-box">
+            <table class="mcoc-table">
+              <thead>
+                <tr>
+                  <th style="width: 70px;">Rank</th>
+                  <th>Summoner / Title</th>
+                  <th>Total Balance</th>
+                  <th>Ranking Metric</th>
+                  <th>Banquet 30K Progress</th>
+                  <th style="text-align: right;">Comparison</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboard-table-body">
+                <!-- Populated by app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           VIEW 4: COMMUNITY & EVENT DISCUSSIONS
+           ================================================================ -->
+      <section id="view-discussion" class="view-section">
+        <div class="section-header-bar">
+          <div class="section-title-wrap">
+            <h3>SUMMONER STRATEGY LOUNGE</h3>
+            <p>Discuss champion rank-ups, siege counters, arena pacing, and banquet crystal investments</p>
+          </div>
+        </div>
+
+        <!-- Battlerealm Code of Conduct & Creator Compliance Card -->
+        <div class="conduct-card">
+          <div class="conduct-header">
+            <div class="conduct-title">
+              <span>🛡️</span>
+              <span>Battlerealm Code of Conduct (Kabam Creator Program Standards)</span>
+            </div>
+            <button type="button" class="compliance-btn" id="btn-conduct-modal-trigger">
+              📜 Full Creator Policy
+            </button>
+          </div>
+          <div class="conduct-rules-grid">
+            <div class="conduct-rule-item">
+              <h5>🚫 Zero Leaks & Datamines</h5>
+              <p>Strictly no unreleased assets, datamined files, or broken embargoes. We only discuss officially released updates.</p>
+            </div>
+            <div class="conduct-rule-item">
+              <h5>🛡️ Anti-Cheat & Fair Play</h5>
+              <p>No bots, auto-grinders, account selling, or ToS violations. All progression methods are 100% free-to-play legitimate.</p>
+            </div>
+            <div class="conduct-rule-item">
+              <h5>🤝 Safe Community</h5>
+              <p>Zero tolerance for toxicity, discriminatory language, or harassment of players or Kabam staff. Fair play always.</p>
+            </div>
+            <div class="conduct-rule-item">
+              <h5>📌 Unofficial Fan Site</h5>
+              <p>BattleHub is an independent fan site. We have no formal affiliation with or endorsement from Kabam or Marvel.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="discussion-layout">
+          <!-- Main Comment Thread -->
+          <div>
+            <div class="new-comment-box">
+              <h4 style="font-family: var(--font-display); font-size: 1.05rem; color: var(--contest-gold); margin-bottom: 0.75rem; text-transform: uppercase;">Share Your Strategy With The Battlerealm</h4>
+              <textarea id="community-comment-input" class="comment-input-area" placeholder="Ask for advice, discuss event nodes, or share your weekly units tally..."></textarea>
+              <div style="display: flex; justify-content: flex-end;">
+                <button class="btn btn-marvel" id="btn-post-community-comment">Post to Lounge</button>
+              </div>
+            </div>
+
+            <div class="comments-stream" id="community-comments-stream">
+              <!-- Populated by app.js -->
+            </div>
+          </div>
+
+          <!-- Sidebar: Filter by event / Quick Links -->
+          <div>
+            <div class="mcoc-card" style="margin-bottom: 1.75rem;">
+              <h4 style="font-family: var(--font-display); font-size: 0.95rem; color: var(--cyan-cosmic); margin-bottom: 0.85rem; text-transform: uppercase;">Discussion Channels</h4>
+              <div id="discussion-events-quicklist">
+                <!-- Populated by app.js -->
+              </div>
+            </div>
+
+            <div class="mcoc-card" style="border-color: var(--contest-gold); background: rgba(255, 204, 0, 0.04);">
+              <h5 style="color: var(--contest-gold); font-family: var(--font-display); font-size: 0.9rem; margin-bottom: 0.5rem; text-transform: uppercase;">💡 Pro Summoner Arena Strategy</h5>
+              <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+                Grinding both the 4★ and 7★ arenas twice a week yields <strong>3,547 Units per month</strong> alone. When combined with daily super-events (900u) and monthly quest exploration (1,000u), summoners can earn over <strong>5,500 Units every 30 days</strong> strictly free-to-play.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           VIEW 5: ADMIN PORTAL (Elder Meliodas Command Center)
+           ================================================================ -->
+      <section id="view-admin" class="view-section">
+        <div class="admin-badge-strip">
+          <div style="display: flex; align-items: center; gap: 0.85rem;">
+            <span style="font-size: 1.75rem;">🛡️</span>
+            <div>
+              <h4 style="color: #fff; font-family: var(--font-display); font-size: 1.05rem; text-transform: uppercase;">Administrator Command Center</h4>
+              <p style="font-size: 0.78rem; color: var(--text-muted);">Elder clearance: inspect summoner progression dossiers, manage events, moderate lounge.</p>
+            </div>
+          </div>
+          <button class="btn btn-danger btn-sm" id="btn-admin-reset-db">Reset Database to Defaults</button>
+        </div>
+
+        <!-- Admin Overview Metrics -->
+        <div class="admin-grid-stats">
+          <div class="metric-card">
+            <div class="metric-label">Registered Summoners</div>
+            <div class="metric-number" id="admin-stat-users">0</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Total Realm Units Tracked</div>
+            <div class="metric-number" id="admin-stat-units" style="color: var(--contest-gold);">0</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Published Events</div>
+            <div class="metric-number" id="admin-stat-events">0</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Community Comments</div>
+            <div class="metric-number" id="admin-stat-comments">0</div>
+          </div>
+        </div>
+
+        <!-- All Users Inspection Table -->
+        <div class="mcoc-card" style="margin-bottom: 2.5rem;">
+          <h4 style="font-family: var(--font-display); font-size: 1.15rem; color: var(--contest-gold); margin-bottom: 1rem; text-transform: uppercase;">All Summoners Progression Roster</h4>
+          <div class="table-responsive-box">
+            <table class="mcoc-table">
+              <thead>
+                <tr>
+                  <th>Summoner / Email</th>
+                  <th>Role</th>
+                  <th>Starting</th>
+                  <th>Earned</th>
+                  <th>Current Total</th>
+                  <th>Banquet Progress</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="admin-users-table-body">
+                <!-- Populated by app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Add New Event / News Form -->
+        <div class="mcoc-card">
+          <h4 style="font-family: var(--font-display); font-size: 1.15rem; color: var(--marvel-red); margin-bottom: 1.25rem; text-transform: uppercase;">Publish New MCOC Event / Spotlight Announcement</h4>
+          <form id="admin-add-event-form">
+            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>Event Title</label>
+                <input type="text" id="new-evt-title" class="form-control" placeholder="e.g. Cyber Weekend Vault Deals" required>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>Category</label>
+                <select id="new-evt-category" class="form-control">
+                  <option value="Special Events">Special Events</option>
+                  <option value="Game Updates">Game Updates</option>
+                  <option value="Tips & Tricks">Tips & Tricks</option>
+                  <option value="Champion Spotlights">Champion Spotlights</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>Badge Tag</label>
+                <input type="text" id="new-evt-tag" class="form-control" placeholder="e.g. Cyber Vault">
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>Dates / Duration</label>
+                <input type="text" id="new-evt-dates" class="form-control" placeholder="e.g. Nov 27 - Dec 01, 2026">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>Banner Image URL (Optional)</label>
+                <input type="url" id="new-evt-image" class="form-control" placeholder="https://images.unsplash.com/...">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Rewards (Comma separated)</label>
+              <input type="text" id="new-evt-rewards" class="form-control" placeholder="e.g. 5,000 Units, 7★ Class Nexus, Tier 6 Catalysts">
+            </div>
+
+            <div class="form-group">
+              <label>Event Mechanics / Strategy Guide</label>
+              <textarea id="new-evt-summary" class="comment-input-area" placeholder="Explain the event format, node counters, and unit savings recommendations..." required style="min-height: 110px;"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-marvel">Publish Announcement to BattleHub</button>
+          </form>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ====================================================================
+         FOOTER (With Secret 5-Click Elder Admin Trigger on Logo)
+         ==================================================================== -->
+    <footer class="app-footer">
+      <div class="footer-battlehub-logo" id="footer-battlehub-logo" style="cursor: pointer; display: inline-block; user-select: none;" title="BattleHub Realm (Elder Access: 5 Clicks)">
+        <div class="battlehub-emblem-badge large" style="margin: 0 auto 0.5rem; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: rgba(255, 204, 0, 0.1); border: 2px solid var(--contest-gold); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);">
+          <svg viewBox="0 0 32 32" width="26" height="26">
+            <polygon points="16,2 30,9 30,23 16,30 2,23 2,9" fill="none" stroke="var(--contest-gold)" stroke-width="2"/>
+            <polygon points="16,7 25,12 25,20 16,25 7,20 7,12" fill="var(--marvel-red)"/>
+            <circle cx="16" cy="16" r="3" fill="#fff"/>
+          </svg>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+          <span style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 900; color: #fff; letter-spacing: 1.5px;">BATTLEHUB</span>
+          <span class="badge-unofficial-fan">FAN COMMUNITY</span>
+        </div>
+      </div>
+      <p style="font-family: var(--font-display); font-size: 0.95rem; font-weight: 800; color: #fff; letter-spacing: 1px; text-transform: uppercase; margin-top: 0.5rem;">
+        CONTEST OF CHAMPIONS — UNOFFICIAL COMMUNITY & UNITS PROGRESSION COMMAND
+      </p>
+
+      <!-- Prominent Kabam Content Creator Compliance Box -->
+      <div class="footer-compliance-box">
+        <div class="compliance-header">
+          <div class="compliance-title">
+            <span>⚖️</span>
+            <span>Unofficial Fan Website & Content Creator Program Notice</span>
+          </div>
+          <span class="compliance-badge-legal">Non-Affiliation Notice</span>
+        </div>
+        <p class="compliance-text">
+          <strong>Non-Affiliation Statement:</strong> This is an unofficial fan website for Marvel Contest of Champions. We are <strong>not affiliated with, endorsed by, or sponsored by Kabam Games, Inc. or Marvel Entertainment</strong>. BattleHub is an independent, non-commercial community project operated in full alignment with the <a href="https://playcontestofchampions.com/creator-program/" target="_blank" rel="noopener" style="color: var(--contest-gold); text-decoration: underline;">Kabam Content Creator Program</a> guidelines.
+        </p>
+        <p class="compliance-text">
+          <strong>Copyright & Intellectual Property:</strong> Marvel Contest of Champions, Marvel, and all related character names, likenesses, artwork, logos, and game assets are registered trademarks and copyright © & ™ <strong>Marvel Characters, Inc.</strong> and <strong>Kabam Games, Inc.</strong> No ownership of copyrighted material is claimed. All game data, event dates, and mechanics are derived from official public briefings on <a href="https://playcontestofchampions.com/" target="_blank" rel="noopener" style="color: var(--cyan-cosmic); text-decoration: underline;">playcontestofchampions.com</a>.
+        </p>
+        <p class="compliance-text" style="margin-bottom: 0;">
+          <strong>Conduct & Safety Compliance:</strong> BattleHub strictly enforces Kabam's community safety guidelines: strictly <strong>zero leaks, datamines, or early unreleased content</strong>; strictly <strong>no hacking, botting, cheats, or instructions violating the Terms of Service</strong>; and an uncompromising zero-tolerance policy against harassment or hateful content.
+        </p>
+        <div class="compliance-links-row">
+          <button type="button" class="compliance-btn" id="btn-footer-creator-rules">
+            📜 View Creator Code of Conduct & Rules
+          </button>
+          <a href="https://playcontestofchampions.com/" target="_blank" rel="noopener" class="compliance-btn outline">
+            🌐 Official Game Site (playcontestofchampions.com)
+          </a>
+          <a href="https://playcontestofchampions.com/creator-program/" target="_blank" rel="noopener" class="compliance-btn outline">
+            🤝 Kabam Creator Program Rules
+          </a>
+          <a href="https://playcontestofchampions.com/events/" target="_blank" rel="noopener" class="compliance-btn outline">
+            📅 Official Events Calendar
+          </a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ====================================================================
+       MODAL: KABAM CREATOR PROGRAM COMPLIANCE & FAN SITE POLICY
+       ==================================================================== -->
+  <div class="modal-overlay" id="modal-creator-rules">
+    <div class="modal-container large" style="max-width: 820px; border-color: var(--contest-gold);">
+      <div class="modal-header" style="background: rgba(255, 204, 0, 0.08); border-bottom: 2px solid var(--contest-gold);">
+        <h3 style="color: var(--contest-gold); display: flex; align-items: center; gap: 0.5rem;">
+          <span>🛡️</span> KABAM CONTENT CREATOR POLICY & COMPLIANCE
+        </h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="creator-rules-layout">
+          <!-- Primary Non-Affiliation Box -->
+          <div class="policy-hero-banner">
+            <h4 style="font-family: var(--font-display); font-size: 0.95rem; font-weight: 900; color: var(--contest-gold); margin-bottom: 0.4rem; text-transform: uppercase;">
+              Formal Statement of Non-Affiliation
+            </h4>
+            <p>
+              <strong>“This is an unofficial fan website for Marvel Contest of Champions. We are not affiliated with Kabam or Marvel.”</strong>
+            </p>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem;">
+              Kabam explicitly welcomes unofficial community websites as part of their official Content Creator Program. BattleHub operates in full adherence to the rules laid out by Kabam Games, Inc. and Marvel Entertainment.
+            </p>
+          </div>
+
+          <!-- 5 Rules We Must Follow -->
+          <h4 style="font-family: var(--font-display); font-size: 0.95rem; color: #fff; text-transform: uppercase; margin-top: 0.5rem;">
+            Rules We Strictly Enforce (Kabam Guidelines)
+          </h4>
+
+          <div class="policy-rules-list">
+            <div class="policy-rule-card strict">
+              <h4><span>1.</span> Explicit Non-Affiliation</h4>
+              <p>We clearly state at all times that BattleHub has no formal affiliation with Marvel or Kabam. We do not claim official status or misrepresent our independence.</p>
+            </div>
+
+            <div class="policy-rule-card strict">
+              <h4><span>2.</span> Zero Leaks, Datamines & Early Content</h4>
+              <p>We strictly do NOT share unreleased content, post datamines, breach NDAs, or imply insider access. All event guides, node counters, and champion details are sourced exclusively from publicly released official announcements.</p>
+            </div>
+
+            <div class="policy-rule-card strict">
+              <h4><span>3.</span> Zero Hacking, Cheating, or Botting</h4>
+              <p>Kabam forbids sharing or encouraging hacking, cheating, auto-clickers, or bot instructions. BattleHub strictly enforces this across all unit calculators and discussion forums. Any discussion violating Kabam's Terms of Service is instantly removed.</p>
+            </div>
+
+            <div class="policy-rule-card strict">
+              <h4><span>4.</span> Zero Offensive or Harmful Content</h4>
+              <p>We enforce a safe, welcoming, and harassment-free environment for all summoners. Hate speech, discrimination, and harassment of players or Kabam staff will result in an immediate and permanent realm ban.</p>
+            </div>
+
+            <div class="policy-rule-card strict">
+              <h4><span>5.</span> Respect Copyright & Intellectual Property</h4>
+              <p>Marvel Contest of Champions and all character likenesses are the registered intellectual property of Marvel Characters, Inc. and Kabam Games, Inc. BattleHub does not claim ownership, sell copyrighted assets, or use logos in a manner that implies endorsement.</p>
+            </div>
+          </div>
+
+          <!-- What We Safely Include -->
+          <h4 style="font-family: var(--font-display); font-size: 0.95rem; color: var(--science-green); text-transform: uppercase; margin-top: 0.5rem;">
+            ✅ What BattleHub Safely Features
+          </h4>
+          <div class="policy-rule-card allowed">
+            <p style="margin-bottom: 0.5rem;">
+              Based on official Kabam event pages (<a href="https://playcontestofchampions.com/events/" target="_blank" rel="noopener" style="color: var(--cyan-cosmic);">playcontestofchampions.com/events/</a>) and public game information:
+            </p>
+            <ul style="font-size: 0.8rem; color: var(--text-dim); line-height: 1.6; margin-left: 1.25rem;">
+              <li><strong>Event Summaries:</strong> Detailed breakdowns of live sagas (The Reclamation War, Sieges, Web of Corruption, Summoner's Choice, Banquet).</li>
+              <li><strong>Units Progression & Milestones:</strong> Free-to-play unit mathematics based on in-game quests, arenas, and calendars.</li>
+              <li><strong>Champion Spotlights & Node Counters:</strong> Community strategies to counter difficult AW, BG, and Quest nodes.</li>
+              <li><strong>Official News & Creator Program:</strong> Respectful, official updates celebrating the Contest community.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 1: SUMMONER ACCOUNT (USER SIGN IN & ACCOUNT CREATION ONLY)
+       ==================================================================== -->
+  <div class="modal-overlay" id="modal-auth">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>⚔️ Summoner Account Access</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Auth Tabs: Sign In / Create Account -->
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--mcoc-card-border); padding-bottom: 0.5rem;">
+          <button class="btn btn-outline btn-sm active" id="auth-tab-login" onclick="document.getElementById('form-login').style.display='block'; document.getElementById('form-signup').style.display='none'; this.classList.add('active'); document.getElementById('auth-tab-signup').classList.remove('active');">Sign In</button>
+          <button class="btn btn-outline btn-sm" id="auth-tab-signup" onclick="document.getElementById('form-login').style.display='none'; document.getElementById('form-signup').style.display='block'; this.classList.add('active'); document.getElementById('auth-tab-login').classList.remove('active');">Create New Account</button>
+        </div>
+
+        <!-- User Sign In Form -->
+        <form id="form-login">
+          <div class="form-group">
+            <label>Summoner Email or IGN</label>
+            <input type="text" id="login-email" class="form-control" placeholder="summoner@battlehub.realm or In-Game Name" required>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="login-password" class="form-control" placeholder="••••••••••" required>
+          </div>
+          <button type="submit" class="btn btn-marvel" style="width: 100%;">Sign In as Summoner</button>
+        </form>
+
+        <!-- User Registration Form -->
+        <form id="form-signup" style="display: none;">
+          <div class="form-group">
+            <label>In-Game Name (IGN)</label>
+            <input type="text" id="signup-ign" class="form-control" placeholder="e.g. IronFist99" required>
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="signup-email" class="form-control" placeholder="summoner@battlerealm.com" required>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="signup-password" class="form-control" required>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label>Progression Title</label>
+              <select id="signup-title" class="form-control">
+                <option value="Challenger">Challenger</option>
+                <option value="Contender">Contender</option>
+                <option value="Proven">Proven</option>
+                <option value="Conqueror">Conqueror</option>
+                <option value="Uncollected">Uncollected</option>
+                <option value="Cavalier">Cavalier</option>
+                <option value="Thronebreaker">Thronebreaker</option>
+                <option value="Paragon">Paragon</option>
+                <option value="Valiant" selected>Valiant</option>
+                <option value="Elder">Elder</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Champion Avatar</label>
+              <select id="signup-avatar" class="form-control">
+                <option value="doom">Doctor Doom (Mystic) 🔮</option>
+                <option value="hercules" selected>Hercules (Cosmic) ⚡</option>
+                <option value="ghost">Ghost (Tech) 👻</option>
+                <option value="fury">Nick Fury (Skill) 🎯</option>
+                <option value="archangel">Archangel (Mutant) 🪶</option>
+                <option value="kitty">Kitty Pryde (Mutant) 🐱</option>
+                <option value="torch">Human Torch (Science) 🔥</option>
+                <option value="scorpion">Scorpion (Science) 🦂</option>
+                <option value="nimrod">Nimrod (Tech) 🤖</option>
+                <option value="shangchi">Shang‑Chi (Skill) 🥋</option>
+                <option value="korg">Korg (Skill/Defense) 🪨</option>
+                <option value="colossus">Colossus (Mutant) 🛡️</option>
+                <option value="cgr">Cosmic Ghost Rider (Cosmic) 💀</option>
+                <option value="hyperion">Hyperion (Cosmic) ☀️</option>
+                <option value="omega">Omega Red (Mutant) 🩸</option>
+                <option value="warlock">Warlock (Tech) ⚙️</option>
+                <option value="void">Void (Science) 🌌</option>
+                <option value="thing">Thing (Science) 🧱</option>
+                <option value="absorbing">Absorbing Man (Mystic) ⛓️</option>
+                <option value="mojo">Mojo (Mystic) 📺</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Current In-Game Starting Units</label>
+            <input type="number" id="signup-start-units" class="form-control" value="7920">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Create Summoner Account</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       SECRET ELDER ADMIN MODAL (Triggered by 5 clicks on footer logo)
+       ==================================================================== -->
+  <div class="modal-overlay" id="modal-secret-admin">
+    <div class="modal-container" style="max-width: 480px; border-color: var(--marvel-red);">
+      <div class="modal-header" style="background: #140508; border-bottom: 2px solid var(--marvel-red);">
+        <h3 style="color: var(--marvel-red);">🔒 ELDER ADMINISTRATOR CLEARANCE</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; line-height: 1.5;">
+          Restricted Battlerealm terminal. Enter Elder credentials to unlock Master Command & Summoner Dossiers.
+        </p>
+        <form id="form-secret-admin">
+          <div class="form-group">
+            <label>Elder Username</label>
+            <input type="text" id="admin-sec-username" class="form-control" placeholder="elder" required autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label>Master Passcode</label>
+            <input type="password" id="admin-sec-password" class="form-control" placeholder="••••••••••" required autocomplete="off">
+          </div>
+          <button type="submit" class="btn btn-marvel" style="width: 100%;">Authorize Elder Access</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 2: EVENT DETAILS & DEDICATED DISCUSSION
+       ==================================================================== -->
+  <div class="modal-overlay" id="modal-event-detail">
+    <div class="modal-container large">
+      <div class="modal-header">
+        <h3>EVENT MECHANICS & STRATEGY GUIDE</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" id="event-detail-content">
+        <!-- Populated dynamically by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 3: SUMMONER COMPARISON
+       ==================================================================== -->
+  <div class="modal-overlay" id="modal-compare">
+    <div class="modal-container large">
+      <div class="modal-header">
+        <h3>HEAD-TO-HEAD SUMMONER PROGRESSION</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" id="compare-modal-body">
+        <!-- Populated dynamically by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 4: ADMIN INSPECT DOSSIER
+       ==================================================================== -->
+  <div class="modal-overlay" id="modal-admin-inspect">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 style="color: var(--marvel-red);">SUMMONER PROGRESSION DOSSIER</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" id="admin-inspect-body">
+        <!-- Populated dynamically by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
